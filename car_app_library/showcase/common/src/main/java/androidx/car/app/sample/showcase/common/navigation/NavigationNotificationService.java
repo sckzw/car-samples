@@ -21,12 +21,15 @@ import static androidx.car.app.sample.showcase.common.ShowcaseService.INTENT_ACT
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -74,8 +77,14 @@ public final class NavigationNotificationService extends Service {
     @Override
     public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
         initNotifications(this);
-        startForeground(NAV_NOTIFICATION_ID,
-                getNavigationNotification(this, mNotificationCount).build());
+
+        Notification notification = getNavigationNotification(this, mNotificationCount).build();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(NAV_NOTIFICATION_ID, notification,
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION);
+        } else {
+            startForeground(NAV_NOTIFICATION_ID, notification);
+        }
 
         // Start updating the notification continuously.
         mHandler.sendMessageDelayed(
