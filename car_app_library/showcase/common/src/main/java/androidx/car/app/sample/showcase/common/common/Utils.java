@@ -30,10 +30,13 @@ public abstract class Utils {
     /** Colorize the given string. */
     public static void colorize(@NonNull SpannableString s, @NonNull CarColor color, int index,
             int length) {
+        if (index >= s.length()) {
+            return;
+        }
         s.setSpan(
                 ForegroundCarColorSpan.create(color),
                 index,
-                index + length,
+                Math.min(index + length, s.length()),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
@@ -42,11 +45,7 @@ public abstract class Utils {
     public static CharSequence colorize(@NonNull String s, @NonNull CarColor color, int index,
             int length) {
         SpannableString ss = new SpannableString(s);
-        ss.setSpan(
-                ForegroundCarColorSpan.create(color),
-                index,
-                index + length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        colorize(ss, color, index, length);
         return ss;
     }
 
@@ -55,10 +54,13 @@ public abstract class Utils {
     public static CharSequence clickable(@NonNull String s, int index, int length,
             @NonNull Runnable action) {
         SpannableString ss = new SpannableString(s);
+        if (index >= ss.length()) {
+            return ss;
+        }
         ss.setSpan(
                 ClickableSpan.create(action::run),
                 index,
-                index + length,
+                Math.min(index + length, ss.length()),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return ss;
     }

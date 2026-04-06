@@ -77,8 +77,9 @@ public class SignInTemplateDemoScreen extends Screen {
         };
         carContext.getOnBackPressedDispatcher().addCallback(this, callback);
 
-        mAdditionalText = Utils.clickable(getCarContext().getString(R.string.additional_text), 18,
-                16,
+        String additionalText = getCarContext().getString(R.string.additional_text);
+        mAdditionalText = Utils.clickable(additionalText, 0,
+                additionalText.length(),
                 () -> getScreenManager().push(new LongMessageTemplateDemoScreen(getCarContext())));
 
         mProviderSignInAction = new Action.Builder()
@@ -279,12 +280,13 @@ public class SignInTemplateDemoScreen extends Screen {
         IconCompat providerIcon = IconCompat.createWithResource(getCarContext(),
                 R.drawable.ic_googleg);
         CarColor noTint = CarColor.createCustom(Color.TRANSPARENT, Color.TRANSPARENT);
+        String signInWithGoogleTitle = getCarContext().getString(R.string.sign_in_with_google_title);
 
         ProviderSignInMethod providerSignInMethod = new ProviderSignInMethod(
                 new Action.Builder()
                         .setTitle(Utils.colorize(
-                                getCarContext().getString(R.string.sign_in_with_google_title),
-                                CarColor.createCustom(Color.BLACK, Color.BLACK), 0, 19))
+                                signInWithGoogleTitle,
+                                CarColor.createCustom(Color.BLACK, Color.BLACK), 0, signInWithGoogleTitle.length()))
                         .setBackgroundColor(CarColor.createCustom(Color.WHITE, Color.WHITE))
                         .setIcon(new CarIcon.Builder(providerIcon)
                                 .setTint(noTint)
