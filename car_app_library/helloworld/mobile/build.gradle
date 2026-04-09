@@ -17,12 +17,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdk 32
+    compileSdk 36
 
     defaultConfig {
         applicationId "androidx.car.app.sample.helloworld"
         minSdkVersion 23
-        targetSdkVersion 32
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
     }
@@ -42,10 +42,15 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
     }
     namespace "androidx.car.app.sample.helloworld"
+    packaging {
+        jniLibs {
+            useLegacyPackaging false
+        }
+    }
 }
 
 dependencies {
-    implementation "androidx.car.app:app-projected:1.2.0-rc01"
+    implementation 'androidx.car.app:app-projected:1.7.0'
     implementation project(":helloworld:common")
 }
 
