@@ -26,6 +26,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import androidx.core.content.ContextCompat;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
@@ -331,7 +332,8 @@ public final class NotificationDemoScreen extends Screen implements DefaultLifec
         filter.addAction(INTENT_ACTION_PRIMARY_PHONE);
         filter.addAction(INTENT_ACTION_SECONDARY_PHONE);
 
-        getCarContext().registerReceiver(mBroadcastReceiver, filter);
+        ContextCompat.registerReceiver(
+                getCarContext(), mBroadcastReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     private void unregisterBroadcastReceiver() {
