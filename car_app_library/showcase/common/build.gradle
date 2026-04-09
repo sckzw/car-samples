@@ -17,10 +17,10 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdk 34
     }
 
@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-    implementation "androidx.core:core:1.13.1"
+    implementation "androidx.core:core:1.18.0"
     implementation "androidx.car.app:app:1.7.0"
-    implementation "androidx.annotation:annotation-experimental:1.4.1"
+    implementation "androidx.annotation:annotation-experimental:1.6.0"
 }
