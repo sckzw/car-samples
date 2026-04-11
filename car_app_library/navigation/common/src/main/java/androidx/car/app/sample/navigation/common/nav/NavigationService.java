@@ -26,7 +26,11 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.graphics.BitmapFactory;
+import android.Manifest;
+import androidx.core.content.ContextCompat;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
@@ -372,17 +376,45 @@ public class NavigationService extends Service {
     /** Starts navigation. */
     public void startNavigation() {
         Log.i(TAG, "Starting Navigation");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.FOREGROUND_SERVICE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Log.e(TAG, "Missing required Manifest.permission.FOREGROUND_SERVICE_LOCATION");
+                return;
+            }
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Log.e(TAG, "Missing required Manifest.permission.ACCESS_COARSE_LOCATION");
+                return;
+            }
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Log.e(TAG, "Missing required Manifest.permission.ACCESS_FINE_LOCATION");
+                return;
+            }
+        }
+
         startService(new Intent(getApplicationContext(), NavigationService.class));
 
         Log.i(TAG, "Starting foreground service");
-        startForeground(
-                NAV_NOTIFICATION_ID,
-                getNotification(
-                        true,
-                        false,
-                        getString(R.string.navigation_active),
-                        null,
-                        R.drawable.ic_launcher));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(
+                    NAV_NOTIFICATION_ID,
+                    getNotification(
+                            true,
+                            false,
+                            getString(R.string.navigation_active),
+                            null,
+                            R.drawable.ic_launcher),
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION);
+        } else {
+            startForeground(
+                    NAV_NOTIFICATION_ID,
+                    getNotification(
+                            true,
+                            false,
+                            getString(R.string.navigation_active),
+                            null,
+                            R.drawable.ic_launcher));
+        }
 
         if (mNavigationManager != null) {
             mNavigationManager.navigationStarted();

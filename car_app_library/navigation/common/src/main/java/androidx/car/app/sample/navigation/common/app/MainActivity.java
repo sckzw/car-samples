@@ -21,6 +21,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -33,6 +35,12 @@ import androidx.annotation.Nullable;
 import androidx.car.app.connection.CarConnection;
 import androidx.car.app.sample.navigation.common.R;
 import androidx.car.app.sample.navigation.common.nav.NavigationService;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * The main app activity.
@@ -94,7 +102,26 @@ public class MainActivity extends ComponentActivity {
                 new Intent(this, NavigationService.class),
                 mServiceConnection,
                 Context.BIND_AUTO_CREATE);
-        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+        List< String > permissions = new ArrayList<>( Arrays.asList(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.RECORD_AUDIO
+        ) );
+
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+            permissions.add( Manifest.permission.POST_NOTIFICATIONS );
+        }
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE ) {
+            permissions.add( Manifest.permission.FOREGROUND_SERVICE_LOCATION );
+        }
+
+        for ( String permission: permissions ) {
+            if ( ContextCompat.checkSelfPermission( this, permission ) != PackageManager.PERMISSION_GRANTED ) {
+                ActivityCompat.requestPermissions( this, permissions.toArray( new String[0] ), 0 );
+                break;
+            }
+        }
     }
 
     @Override
